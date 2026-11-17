@@ -263,9 +263,8 @@ body::after {
   outline: none;
   transform: scale(var(--lift));
   transition:
-    transform 0.6s var(--ease),
-    opacity 0.55s ease,
-    filter 0.55s ease;
+    transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 0.55s ease;
   -webkit-tap-highlight-color: transparent;
   animation: bloom 1.5s var(--ease) backwards;
 }
@@ -527,7 +526,6 @@ body::after {
 .field:has(.bubble-slot.is-king) .bubble-slot:not(.is-king) .bubble {
   --lift: 0.955;
   opacity: 0.36;
-  filter: blur(1.8px) saturate(0.65);
 }
 
 .bubble:focus-visible {
