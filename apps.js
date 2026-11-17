@@ -20,4 +20,13 @@ window.APPS = [
     href: "https://vj-madhu-dath.github.io/camera-butler/",
     tint: [127, 224, 195],
   },
+  {
+    name: "Deadline Calendar",
+    category: "Business",
+    tagline: "Never miss a filing date.",
+    blurb: "A short profile turns into every federal and California deadline for the year — as a calendar file and a printable checklist.",
+    meta: "2026 · Browser · No account",
+    href: "https://vj-madhu-dath.github.io/deadline-calendar/",
+    tint: [174, 188, 255],
+  },
 ];
