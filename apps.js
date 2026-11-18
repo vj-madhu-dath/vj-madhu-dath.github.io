@@ -21,6 +21,15 @@ window.APPS = [
     tint: [127, 224, 195],
   },
   {
+    name: "DoneDoner",
+    category: "Productivity",
+    tagline: "Keep a record of what you finish.",
+    blurb: "A small done list and scratchpad, saved in this browser, with CSV and PNG exports.",
+    meta: "2026 · Browser · Local storage",
+    href: "https://donedoner.web.app/",
+    tint: [194, 173, 255],
+  },
+  {
     name: "Deadline Calendar",
     category: "Business",
     tagline: "Never miss a filing date.",

@@ -2,10 +2,12 @@
 
 A small personal hub for web apps, drawn as floating bubbles.
 
-Two apps live here right now:
+Four apps are listed here right now:
 
 - **Flute Timer** — https://vj-madhu-dath.github.io/flute-timer/
 - **Camera Butler** — https://vj-madhu-dath.github.io/camera-butler/
+- **DoneDoner** — https://donedoner.web.app/
+- **Deadline Calendar** — https://vj-madhu-dath.github.io/deadline-calendar/
 
 All bubbles are the same size at rest. Hovering one crowns it: it grows, the others recede, and the bubble reveals a short description and meta line. Clicking opens the app in a new tab. On phones, the first tap previews and the second opens.
 
