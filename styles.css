@@ -263,7 +263,7 @@ body::after {
   outline: none;
   transform: scale(var(--lift));
   transition:
-    transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.55s ease;
   -webkit-tap-highlight-color: transparent;
   animation: bloom 1.5s var(--ease) backwards;
@@ -301,8 +301,6 @@ body::after {
     inset -24px -30px 80px rgba(0, 0, 0, 0.32),
     0 38px 80px -20px rgba(0, 0, 0, 0.65),
     0 0 110px rgba(var(--rgb), 0.12);
-  backdrop-filter: blur(3px) saturate(1.05);
-  -webkit-backdrop-filter: blur(3px) saturate(1.05);
   transition: border-color 0.6s ease, box-shadow 0.6s ease;
 }
 
