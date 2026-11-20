@@ -98,6 +98,13 @@
     const king = stickySlot || hoveredSlot || focusedSlot;
     slots.forEach((slot) => {
       const isKing = slot === king;
+      const baseSize = Number.parseFloat(slot.dataset.baseSize);
+      if (baseSize) {
+        const size = stacked.matches && isKing
+          ? Math.min(218, Math.max(160, field.clientWidth * 0.68))
+          : baseSize;
+        slot.style.setProperty("--size", `${size.toFixed(1)}px`);
+      }
       if (!isKing) {
         slot.querySelectorAll(".faq-bubble[open]").forEach((faq) => {
           faq.open = false;
@@ -190,6 +197,7 @@
 
     if (stacked.matches) layoutStacked(width);
     else layoutScattered(width, height);
+    refreshKing();
   }
 
   function layoutStacked(width) {
@@ -205,6 +213,7 @@
 
     slots.forEach((slot) => {
       const shift = (rng() - 0.5) * 2 * shiftMax;
+      slot.dataset.baseSize = diameter.toFixed(1);
       slot.style.setProperty("--size", `${diameter.toFixed(1)}px`);
       slot.style.setProperty("--shift", `${shift.toFixed(1)}px`);
       slot.style.left = "";
@@ -241,6 +250,7 @@
 
     slots.forEach((slot, index) => {
       const point = points[index];
+      slot.dataset.baseSize = diameter.toFixed(1);
       slot.style.setProperty("--size", `${diameter.toFixed(1)}px`);
       slot.style.left = `${point.x.toFixed(1)}px`;
       slot.style.top = `${point.y.toFixed(1)}px`;

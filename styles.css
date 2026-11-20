@@ -882,15 +882,16 @@ body::after {
     left: auto;
     transform: translateX(var(--shift, 0px));
     animation: none;
+    transition: width 0.45s var(--ease), margin-bottom 0.35s ease;
   }
 
   .bubble-slot.is-king {
     z-index: 12;
-    margin-bottom: 410px;
+    margin-bottom: 440px;
   }
 
   .bubble-slot.is-king:has(.faq-bubble[open]) {
-    margin-bottom: 500px;
+    margin-bottom: 530px;
   }
 
   .faq-orbit {
@@ -915,7 +916,7 @@ body::after {
     position: relative;
     top: auto;
     left: auto;
-    width: min(100%, 118px);
+    width: min(100%, 128px);
     transform: none;
   }
 
@@ -926,6 +927,7 @@ body::after {
   .faq-bubble__answer {
     top: calc(100% + 8px);
     width: min(280px, calc(90vw - 20px));
+    font-size: 13px;
   }
 
   .faq-bubble:nth-child(odd) .faq-bubble__answer {
@@ -940,13 +942,75 @@ body::after {
   }
 
   .faq-bubble > summary {
-    padding: 14%;
-    font-size: clamp(10px, 3.1vw, 12px);
+    padding: 12%;
+    font-size: clamp(10px, 3.4vw, 12px);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  body::after {
+    display: none;
+  }
+
+  .bubble,
+  .top,
+  .foot {
+    animation: none;
   }
 
   .field::before,
   .field::after {
-    filter: blur(30px);
+    filter: none;
+    animation: none;
+  }
+
+  .bubble::before {
+    filter: none;
+  }
+
+  .bubble__body,
+  .bubble-slot.is-king .bubble__body {
+    box-shadow:
+      inset 0 0 34px rgba(var(--rgb), 0.14),
+      inset 6px 8px 22px rgba(255, 255, 255, 0.06),
+      0 20px 40px rgba(0, 0, 0, 0.44);
+  }
+
+  .bubble-slot.is-king .bubble__body {
+    box-shadow:
+      inset 0 0 40px rgba(var(--rgb), 0.2),
+      inset 6px 8px 22px rgba(255, 255, 255, 0.08),
+      0 24px 48px rgba(0, 0, 0, 0.48),
+      0 0 56px rgba(var(--rgb), 0.18);
+  }
+
+  .bubble__iridescence {
+    opacity: 0.42;
+    filter: none;
+    mix-blend-mode: normal;
+  }
+
+  .bubble__glint {
+    display: none;
+  }
+
+  .faq-bubble {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow:
+      inset 0 0 18px rgba(var(--rgb), 0.16),
+      0 12px 24px rgba(0, 0, 0, 0.4),
+      0 0 22px rgba(var(--rgb), 0.14);
+  }
+
+  .faq-bubble > summary span {
+    animation: none;
+  }
+
+  .faq-bubble__answer {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.46);
   }
 
   .foot {
