@@ -5,17 +5,9 @@
   if (!field) return;
 
   const apps = Array.isArray(window.APPS)
-    ? window.APPS.filter((app) => app && app.name && app.href)
+    ? window.APPS.filter((app) => app && app.slot && app.name && app.href)
     : [];
 
-  const FALLBACK_TINTS = [
-    [246, 198, 106],
-    [127, 224, 195],
-    [174, 188, 255],
-    [243, 171, 188],
-    [194, 173, 255],
-    [157, 219, 146],
-  ];
   const COUNT_WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
 
   const seed = Math.floor(Math.random() * 0xffffffff);
@@ -30,17 +22,6 @@
   let stickySlot = null;
   let layoutFrame = 0;
 
-  const esc = (value) =>
-    String(value ?? "").replace(/[&<>"']/g, (character) => {
-      return {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;",
-      }[character];
-    });
-
   function mulberry32(start) {
     let state = start >>> 0;
     return () => {
@@ -52,100 +33,50 @@
     };
   }
 
-  function tintFor(app, index) {
-    const tint = app.tint;
-    if (Array.isArray(tint) && tint.length >= 3) {
-      return tint
-        .slice(0, 3)
-        .map((value) => Math.max(0, Math.min(255, Number(value) || 0)))
-        .join(", ");
-    }
-    if (typeof tint === "string" && tint.trim()) return tint.trim();
-    return FALLBACK_TINTS[index % FALLBACK_TINTS.length].join(", ");
-  }
-
   function render() {
-    const fragment = document.createDocumentFragment();
+    slots = apps.map((app) => app.slot);
 
-    apps.forEach((app, index) => {
-      const slot = document.createElement("div");
-      const rgb = tintFor(app, index);
-      const number = String(index + 1).padStart(2, "0");
-      const kicker = app.category ? `${number} · ${app.category}` : number;
-      const descriptionId = `bubble-description-${index}`;
-      const hasDescription = Boolean(app.blurb || app.meta);
-      const describedBy = hasDescription ? ` aria-describedby="${descriptionId}"` : "";
-
-      slot.className = "bubble-slot";
-      slot.dataset.index = String(index);
-      slot.innerHTML = `
-        <a class="bubble" href="${esc(app.href)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(app.name)} in a new tab"${describedBy} style="--rgb: ${esc(rgb)}">
-          <span class="bubble__body">
-            <span class="bubble__iridescence" aria-hidden="true"></span>
-            <span class="bubble__glint" aria-hidden="true"></span>
-            <span class="bubble__shine" aria-hidden="true"></span>
-            <span class="bubble__shine bubble__shine--low" aria-hidden="true"></span>
-            <span class="bubble__content">
-              <span class="bubble__kicker">${esc(kicker)}</span>
-              <span class="bubble__name">${esc(app.name)}</span>
-              <span class="bubble__rule" aria-hidden="true"></span>
-              ${app.tagline ? `<span class="bubble__tagline">${esc(app.tagline)}</span>` : ""}
-              ${
-                hasDescription
-                  ? `<span class="bubble__more" id="${descriptionId}"><span class="bubble__more-inner">
-                      ${app.blurb ? `<span class="bubble__blurb">${esc(app.blurb)}</span>` : ""}
-                      ${app.meta ? `<span class="bubble__meta">${esc(app.meta)}</span>` : ""}
-                    </span></span>`
-                  : ""
-              }
-              <span class="bubble__open">
-                Open app
-                <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path d="M3.2 8.8 8.8 3.2M4.5 3.2h4.3v4.3" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-            </span>
-          </span>
-        </a>`;
-
-      const bubble = slot.firstElementChild;
+    slots.forEach((slot, index) => {
+      const bubble = slot.querySelector(".bubble");
       const driftRng = mulberry32(seed + index * 9973);
-
       slot.dataset.drift = driftRng() > 0.5 ? "b" : "a";
       slot.style.animationDuration = `${(13 + driftRng() * 5).toFixed(1)}s`;
       slot.style.animationDelay = `-${(driftRng() * 12).toFixed(1)}s`;
       bubble.style.animationDelay = `${(0.18 + index * 0.09).toFixed(2)}s`;
-
-      fragment.appendChild(slot);
     });
 
-    field.appendChild(fragment);
-    slots = Array.from(field.querySelectorAll(".bubble-slot"));
+    field.classList.add("is-enhanced");
     attach(slots);
   }
 
   function attach(list) {
     list.forEach((slot) => {
       const bubble = slot.querySelector(".bubble");
-
-      bubble.addEventListener("pointerenter", () => {
+      const faqOrbit = slot.querySelector(".faq-orbit");
+      const enterSlot = () => {
         if (!finePointer.matches) return;
         hoveredSlot = slot;
         refreshKing();
-      });
-
-      bubble.addEventListener("pointerleave", () => {
+      };
+      const leaveSlot = (event) => {
+        if (event.relatedTarget instanceof Node && slot.contains(event.relatedTarget)) return;
         if (hoveredSlot === slot) hoveredSlot = null;
         resetGlint(bubble);
         refreshKing();
-      });
+      };
 
-      bubble.addEventListener("focus", () => {
+      slot.addEventListener("pointerenter", enterSlot);
+      slot.addEventListener("pointerleave", leaveSlot);
+      faqOrbit.addEventListener("pointerenter", enterSlot);
+      faqOrbit.addEventListener("pointerleave", leaveSlot);
+
+      slot.addEventListener("focusin", () => {
         focusedSlot = slot;
         refreshKing();
       });
 
-      bubble.addEventListener("blur", () => {
+      slot.addEventListener("focusout", (event) => {
+        if (event.relatedTarget instanceof Node && slot.contains(event.relatedTarget)) return;
         if (focusedSlot === slot) focusedSlot = null;
         refreshKing();
       });
@@ -165,7 +96,15 @@
 
   function refreshKing() {
     const king = stickySlot || hoveredSlot || focusedSlot;
-    slots.forEach((slot) => slot.classList.toggle("is-king", slot === king));
+    slots.forEach((slot) => {
+      const isKing = slot === king;
+      if (!isKing) {
+        slot.querySelectorAll(".faq-bubble[open]").forEach((faq) => {
+          faq.open = false;
+        });
+      }
+      slot.classList.toggle("is-king", isKing);
+    });
   }
 
   function attachGlint(bubble) {

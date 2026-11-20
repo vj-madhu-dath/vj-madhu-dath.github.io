@@ -16,16 +16,20 @@ All bubbles are the same size at rest. Hovering one crowns it: it grows, the oth
 ```text
 .
 ├── index.html
-├── apps.js          The app list — edit this
-├── app.js           Rendering, layout and interactions
+├── apps.js          Reads the static app cards for enhancement
+├── app.js           Bubble layout and interactions
 ├── styles.css
 ├── assets/
 │   └── favicon.svg
+├── robots.txt
+├── sitemap.xml
 ├── .nojekyll
 └── README.md
 ```
 
 No build step, no dependencies, no external fonts. Plain HTML, CSS and JavaScript.
+The app cards and their FAQs are present in `index.html` for crawlability; JavaScript
+enhances that markup with the scattered bubble layout and interactions.
 
 ## Preview locally
 
@@ -37,26 +41,16 @@ Then open <http://127.0.0.1:8899/>.
 
 ## Adding another app
 
-Open `apps.js` and add one object to the array:
+Add an `<article data-app-card>` to `index.html` with the app bubble and its FAQ
+disclosures. Keep its heading, description, link, and FAQ answers in the HTML. Then
+add the app to the JSON-LD item list and `sitemap.xml`. `apps.js` discovers app cards
+from the page automatically.
 
-```js
-{
-  name: "Your App",
-  category: "Utilities",
-  tagline: "One short line shown at rest.",
-  blurb: "A sentence or two revealed when the bubble is crowned.",
-  meta: "2026 · Browser · No account",
-  href: "https://vj-madhu-dath.github.io/your-app/",
-  tint: [174, 188, 255], // optional [r, g, b]
-}
-```
-
-That's it. Everything else is automatic:
+The bubble layout and behavior remain automatic:
 
 - Bubbles stay equal in size and shrink as the collection grows.
 - Placement is randomized on every reload, with a minimum gap and enough edge space for the hover expansion.
-- Kickers renumber automatically.
-- Missing tints are picked from a small palette.
+- Kickers should follow the app order and tint is set on each card.
 - Each bubble gets its own drift timing.
 
 The layout is seeded once per page load, so it stays put while you resize. Refreshing gives a new arrangement. With more than about ten apps the bubbles get quite small; beyond that, consider splitting into separate pages.
@@ -64,7 +58,8 @@ The layout is seeded once per page load, so it stays put while you resize. Refre
 ## Behavior notes
 
 - **Desktop:** hover (or keyboard focus) crowns a bubble. Click opens it.
-- **Touch:** first tap previews, second tap opens. Tapping the background or pressing Escape clears the preview.
+- **FAQs:** the crowned app reveals five small FAQ bubbles. Open a question to read its answer.
+- **Touch:** first tap previews, second tap opens. FAQ bubbles open answers; tapping the background or pressing Escape clears the preview.
 - **Keyboard:** focus reveals the description; Enter opens the app on the first activation.
 - **Reduced motion:** drift and transitions are disabled.
 
